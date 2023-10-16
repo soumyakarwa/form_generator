@@ -37,12 +37,12 @@ let mouse_stopped = false;
 let animation_is_switched = false;
 let animation_limit = 20;
 let animation_text = "curiosity";
-let canvas_width = 400;
-let canvas_height = 400;
+let canvas_width;
+let canvas_height;
 let text_offset = [94.5, 9.5];
-let text_x = canvas_width / 2 - text_offset[0];
-let text_y = canvas_height / 2 + text_offset[1];
-let text_size = 35;
+let text_x; 
+let text_y; 
+let border = 20; 
 
 // animation_one variables
 let counter_one = 0;
@@ -50,8 +50,8 @@ let animation_one_text_position_x = [];
 let animation_one_text_position_y = [];
 let animation_one_text_colors = [];
 let animation_one_text = animation_text;
-let animation_one_limit = 30;
-let animation_one_text_size = 30;
+let animation_one_limit = 50;
+let animation_one_text_size = 60;
 
 // animation_two variables
 let counter_two = 0;
@@ -62,8 +62,8 @@ let sample = 0;
 let ellipse_size = 0;
 let animation_two_color = font_colors[0];
 let animation_two_text = animation_text.split("");
-let animation_two_text_size = text_size;
-let animation_two_text_spacing = 21; 
+let animation_two_text_size = 60;
+let animation_two_text_spacing = 36; 
 let x_animation = [];
 let y_animation = [];
 let used_letters = []; 
@@ -78,7 +78,7 @@ let words = [
   "trio",
   "yurt",
 ];
-let word_size = text_size*2; 
+let word_size = animation_two_text_size*2; 
 let last_word_display = 0;
 let delay_between_words = 0.5;
 let displayed_word = null;
@@ -98,6 +98,7 @@ let animation_three_letters = animation_text.split("");
 let animation_three_text = [];
 let animation_three_limit = 45;
 let animation_three_letter_counter = 0;
+let animation_three_text_size = 60; 
 
 // PRELOAD
 function preload() {
@@ -108,6 +109,17 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(background_color);
+
+  canvas_width = width - border*2; 
+  canvas_height = height - border*2; 
+
+  fill(background_color); 
+  noStroke();
+  rect(border, border, canvas_width, canvas_height); 
+
+  text_x = width / 2 - text_offset[0];
+  text_y = height / 2 + text_offset[1];
+
   prev_mouseX = mouseX;
   prev_mouseY = mouseY;
   textFont(roboto); 
@@ -116,7 +128,7 @@ function setup() {
     text_x,
     text_y,
     random(font_colors),
-    text_size
+    animation_one_text_size 
   );
   first.display();
   //   line(0, height / 2, width, height / 2);
@@ -130,6 +142,9 @@ function draw() {
   check_mouse_moving();
   if (!mouse_stopped) {
     background(background_color);
+    fill(background_color);
+    noStroke();  
+    rect(border, border, canvas_width, canvas_height); 
 
     if (current_animation === 1) {
       animation_one();
@@ -147,7 +162,7 @@ function draw() {
 
 // ANIMATION_ONE HELPER
 function animation_one() {
-  if (mouseX < width && mouseY < height && mouseX > 0 && mouseY > 0) {
+  if (mouseX < canvas_width && mouseY < canvas_height && mouseX > border && mouseY > border) {
     animation_is_switched = false;
     animation_one_text_position_x.push(mouseX);
     animation_one_text_position_y.push(mouseY);
@@ -180,7 +195,7 @@ function animation_one() {
 function animation_two() {
   
   // checks if the mouse in on the canvas
-  if (mouseX < width && mouseY < height && mouseX > 0 && mouseY > 0) {
+  if (mouseX < canvas_width && mouseY < canvas_height && mouseX > border && mouseY > border) {
     animation_is_switched = false;
     
     let x_loc = text_x;
@@ -192,7 +207,7 @@ function animation_two() {
       y_animation[i] = y_loc;
       
       // changing the alpha value for each letter
-      let alphaValue = used_letters.includes(animation_two_text[i])         ? alpha_max : alpha_min; 
+      let alphaValue = used_letters.includes(animation_two_text[i]) ? alpha_max : alpha_min; 
 
       let col = hex_alpha(font_colors[1], alphaValue); 
       
@@ -201,7 +216,7 @@ function animation_two() {
         x_loc,
         y_loc,
         col,
-        text_size
+        animation_two_text_size
       );
       current.display();
       x_loc = x_loc + animation_two_text_spacing;
@@ -242,7 +257,7 @@ function animation_two() {
 function animation_three() {
   
   // checks if the mouse is on the canvas
-  if (mouseX < width && mouseY < height && mouseX > 0 && mouseY > 0) {
+  if (mouseX < canvas_width && mouseY < canvas_height && mouseX > border && mouseY > border) {
     
     animation_is_switched = false;
     animation_three_text_position_x.push(mouseX);
@@ -277,7 +292,7 @@ function animation_three() {
         animation_three_text_position_x[i],
         animation_three_text_position_y[i],
         animation_three_text_colors[i],
-        text_size
+        animation_three_text_size
       );
       obj.display();
     }
@@ -287,7 +302,7 @@ function animation_three() {
 // changes the animation through a loop once the mouse exits the canvas
 function switch_animation() {
   // once the mouse exits the canvas, change the animation
-  if (mouseX > width || mouseY > height || mouseX < 0 || mouseY < 0) {
+  if (mouseX > canvas_width || mouseY > canvas_height || mouseX < border || mouseY < border) {
     clear();
     background(background_color);
 
