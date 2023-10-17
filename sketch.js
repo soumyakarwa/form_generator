@@ -25,7 +25,7 @@ I created a wrapper class called textObject to access and change it's different 
 */
 
 // colors  
-let background_color = "#0E0D06";
+let background_color = "#000000";
 let font_colors = ["#70F7FF", "#FAFF70", "#EF476F", "#379634"];
 
 // experiment :let font_colors = ["#26547C", "#EF476F", "#00c49a", "#561643"]; let background_color = "#F2EFDF";
@@ -39,9 +39,6 @@ let animation_limit = 20;
 let animation_text = "curiosity";
 let canvas_width;
 let canvas_height;
-let text_offset = [94.5, 9.5];
-let text_x; 
-let text_y; 
 let border = 20; 
 
 // animation_one variables
@@ -63,7 +60,10 @@ let ellipse_size = 0;
 let animation_two_color = font_colors[0];
 let animation_two_text = animation_text.split("");
 let animation_two_text_size = 60;
-let animation_two_text_spacing = 36; 
+let animation_two_text_spacing; 
+let text_offset = [];
+let text_x; 
+let text_y; 
 let x_animation = [];
 let y_animation = [];
 let used_letters = []; 
@@ -86,7 +86,7 @@ let displayed_word_pos = { x: null, y: null };
 let x_min = 0; 
 let y_min = 20; 
 let alpha_max = 255; 
-let alpha_min = 100; 
+let alpha_min = 50; 
 let hover_offset = 22;
 
 // animation_three variables
@@ -109,32 +109,10 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(background_color);
-
-  canvas_width = width - border*2; 
-  canvas_height = height - border*2; 
-
   fill(background_color); 
   noStroke();
   rect(border, border, canvas_width, canvas_height); 
-
-  text_x = width / 2 - text_offset[0];
-  text_y = height / 2 + text_offset[1];
-
-  prev_mouseX = mouseX;
-  prev_mouseY = mouseY;
-  textFont(roboto); 
-  first = new textObject(
-    animation_one_text,
-    text_x,
-    text_y,
-    random(font_colors),
-    animation_one_text_size 
-  );
-  first.display();
-  //   line(0, height / 2, width, height / 2);
-
-  //   // Vertical line
-  //   line(width / 2, 0, width / 2, height);
+  setUpHelper(); 
 }
 
 // DRAW
@@ -149,7 +127,7 @@ function draw() {
     if (current_animation === 1) {
       animation_one();
     } else if (current_animation === 2) {
-      animation_two();
+      animation_two(); 
     } else if (current_animation === 3) {
       animation_three();
     }
@@ -157,7 +135,38 @@ function draw() {
     if (!animation_is_switched) {
       switch_animation();
     }
+
+    // stroke(255); 
+    // line(0, height/2, width, height/2); 
+    // line(width/2, 0, width/2, height); 
+    // noStroke(); 
   }
+}
+
+function drawHelper(){
+  
+}
+
+function setUpHelper(){
+  canvas_width = width - border*2; 
+  canvas_height = height - border*2; 
+  temp = calculateAnimationTwoOffsets(animation_two_text_size);
+  text_offset[0] = temp[0]; 
+  text_offset[1] = temp[1]; 
+  animation_two_text_spacing = temp[2]; 
+  text_x = width / 2 - text_offset[0];
+  text_y = height / 2 + text_offset[1];
+  prev_mouseX = mouseX;
+  prev_mouseY = mouseY;
+  textFont(roboto); 
+  first = new textObject(
+    animation_one_text,
+    text_x,
+    text_y,
+    random(font_colors),
+    animation_one_text_size 
+  );
+  first.display();
 }
 
 // ANIMATION_ONE HELPER
@@ -345,4 +354,11 @@ function hex_alpha(hex, alpha) {
 
   // Return a p5.Color with the desired alpha value
   return color(r, g, b, alpha);
+}
+
+function calculateAnimationTwoOffsets(text_size){
+  x_off = text_size*94.5/35; 
+  y_off = text_size*9.5/35; 
+  spacing = text_size*36/60; 
+  return [x_off, y_off, spacing]
 }
