@@ -8,7 +8,6 @@ class textObject {
     this.text_color = text_color; 
     this.active = true;
     this.text_size = text_size; 
-    textFont("Roboto Mono");
   }
 
   display() {
